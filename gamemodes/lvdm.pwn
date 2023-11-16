@@ -179,10 +179,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 	for (new i = 0; i < MAX_SECURITY; i++) {
 		if(seguridad[playerid][i] == INVALID_PLAYER_ID){
+			new name[80];
 			new Float:playerPosX, Float:playerPosY, Float:playerPosZ;
 			GetPlayerPos(playerid, playerPosX, playerPosY, playerPosZ);
 			new guard_name[80];
-			format(guard_name,sizeof(guard_name), "GUARD_%i.",i);
+			GetPlayerName(playerid,name , sizeof(name));
+			format(guard_name,sizeof(guard_name), "%s_GUARD_%i.",name,i);
+
 			seguridad[playerid][i] = FCNPC_Create(guard_name);
 			FCNPC_Spawn(seguridad[playerid][i], 164, playerPosX, playerPosY, playerPosZ);
 
@@ -193,7 +196,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 
 			FCNPC_SetWeapon(seguridad[playerid][i], WEAPON_DEAGLE);
-			FCNPC_AimAtPlayer(seguridad[playerid][i], playerid, false);
+			FCNPC_SetAmmo(seguridad[playerid][i], 10000)
+		//	FCNPC_AimAtPlayer(seguridad[playerid][i], playerid, true);
+
+		//	FCNPC_AimAtPlayer(npcid, playerid, bool:shoot = false, shoot_delay = -1, bool:set_angle = true, Float:offset_x = 0.0, Float:offset_y = 0.0, Float:offset_z = 0.0, Float:offset_from_x = 0.0, Float:offset_from_y = 0.0, Float:offset_from_z = 0.0, between_check_mode = FCNPC_ENTITY_MODE_AUTO, between_check_flags = FCNPC_ENTITY_CHECK_ALL)
 			return 1;
 		}
 }
@@ -387,6 +393,7 @@ public FCNPC_OnInit()
 	FCNPC_Spawn(myFirstNPC, 0, 2027.6785,1344.4966,10.8203);
 	return 1;
 }*/
+
 
 
 public OnGameModeInit()
@@ -721,3 +728,14 @@ strtok(const string[], &index)
 
 
 
+public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+{
+    if (bodypart == 9)
+    {
+        // El disparo fue en la cabeza, el jugador muere instantáneamente
+        SetPlayerHealth(playerid, 0.0);
+    
+    }
+
+    return 1;
+}
